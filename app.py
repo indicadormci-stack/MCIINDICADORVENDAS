@@ -100,6 +100,9 @@ df_table = top_df.drop(columns=["Cor"]).copy() if "Cor" in top_df.columns else t
 df_table["Valor"] = df_table["Valor"].map("R$ {:,.2f}".format)
 st.dataframe(df_table)
 
+if selected_top != "Todos" and len(top_df) < (top_n if top_n is not None else len(top_df)):
+    st.caption(f"⚠️ Apenas {len(top_df)} clientes encontrados para o filtro aplicado.")
+
 st.markdown("---")
 st.subheader("📋 Dados filtrados (amostra)")
 df_preview = df_f.head(200).copy()
