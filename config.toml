@@ -1,0 +1,7 @@
+
+[theme]
+primaryColor = "#1f77b4"         # Azul principal
+backgroundColor = "#f9f9f9"      # Fundo claro
+secondaryBackgroundColor = "#ffffff"  # Cartões e caixas brancas
+textColor = "#262730"            # Texto cinza escuro
+font = "sans serif"
