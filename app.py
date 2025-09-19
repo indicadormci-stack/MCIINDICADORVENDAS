@@ -20,6 +20,12 @@ df = load_data()
 st.title("📈 Análise de Vendas — Top Clientes")
 st.markdown("Interface dinâmica para visualizar vendas por cliente e por ano. Use os filtros laterais para selecionar um ano e a quantidade de clientes no ranking.")
 
+# --- Filtro por cliente ou código ---
+search_query = st.text_input("🔎 Pesquisar Cliente (por nome ou código):").strip().lower()
+if search_query:
+    df = df[df["CLIENTE"].str.lower().str.contains(search_query) | df["COD.CLI."].astype(str).str.contains(search_query)]
+
+
 # --- Sidebar filtros ---
 anos = sorted(df["Ano"].dropna().unique().tolist())
 anos_display = ["Total"] + anos
