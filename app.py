@@ -79,7 +79,6 @@ elif pagina == "Clientes Perdidos":
     st.dataframe(df_perdidos, use_container_width=True)
 
     # --- Novo gráfico consolidado ---
-    st.markdown("### 📊 Top Clientes Perdidos por Valor")
     top_filter = st.selectbox("Selecionar Top N", ["Top 5", "Top 10", "Top 20", "Todos"], index=1)
 
     if top_filter != "Todos":
