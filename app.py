@@ -50,8 +50,11 @@ col3.metric(f"Top {top_n} — Soma", f"R$ {top10['Valor'].sum():,.2f}")
 st.markdown("---")
 
 
+
 # Exibição principal: gráfico + tabela
-st.markdown("## 📊 Top {top_n} Clientes por Valor — " + ("Todos os anos" if selected_ano=="Total" else "Ano " + selected_ano), unsafe_allow_html=True)
+st.markdown("## 📊 Top {} Clientes por Valor — {}".format(
+    top_n, "Todos os anos" if selected_ano=="Total" else "Ano " + selected_ano
+), unsafe_allow_html=True)
 
 if top10.shape[0] == 0:
     st.info("Nenhum dado para o filtro selecionado.")
@@ -68,11 +71,11 @@ else:
         hover_data=["COD.CLI."],
         color="Cor",
         color_discrete_map="identity",
-        labels={"Valor":"Valor (R$)", "CLIENTE":"Cliente"}
+        labels={"Valor": "Valor (R$)", "CLIENTE": "Cliente"}
     )
     fig.update_traces(texttemplate="R$ %{x:,.2f}", textposition="outside")
     fig.update_layout(
-        yaxis={"categoryorder":"total ascending"},
+        yaxis={"categoryorder": "total ascending"},
         margin=dict(t=30, b=30, l=100, r=40),
         showlegend=False,
         height=500
@@ -81,7 +84,11 @@ else:
 
 st.markdown("## 📑 Tabela — Top 10")
 # Estilização da tabela
-styled_table = top10.drop(columns=["Cor"]).style.format({"Valor":"R$ {:,.2f}"}).background_gradient(subset=["Valor"], cmap="Blues")
+styled_table = (
+    top10.drop(columns=["Cor"])
+    .style.format({"Valor": "R$ {:,.2f}"})
+    .background_gradient(subset=["Valor"], cmap="Blues")
+)
 st.dataframe(styled_table, height=500)
 
     st.subheader(f"Top {top_n} Clientes por Valor — {'Todos os anos' if selected_ano=='Total' else 'Ano '+selected_ano}")
