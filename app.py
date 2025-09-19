@@ -13,12 +13,15 @@ df["Ano"] = df["Ano"].astype(str)
 
 # Menu lateral
 st.sidebar.title("📊 Indicadores")
+pagina = st.sidebar.radio("Navegação", ["Análise de Vendas", "Clientes Perdidos"])
 
 # ================= Análise de Vendas =================
 if pagina == "Análise de Vendas":
+    st.title("📈 Análise de Vendas — Top Clientes")
 
     anos = sorted(df["Ano"].unique().tolist())
     selected_ano = st.sidebar.selectbox("Selecione o Ano", ["Total"] + anos)
+    top_n = st.sidebar.selectbox("Top N clientes", ["Top 5", "Top 10", "Top 50", "Todos"])
 
     # Filtro de ano
     if selected_ano != "Total":
@@ -43,6 +46,8 @@ if pagina == "Análise de Vendas":
     fig.update_traces(texttemplate="R$ %{x:,.2f}", textposition="outside")
     st.plotly_chart(fig, use_container_width=True)
 
+    st.markdown("### 📋 Tabela — Top Clientes")
+    st.dataframe(df_group, height=500, use_container_width=True)
 
     # Busca por cliente
     st.markdown("### 🔎 Pesquisa por Cliente")
@@ -50,7 +55,10 @@ if pagina == "Análise de Vendas":
     if termo:
         termo_lower = termo.lower()
         df_busca = df[df["CLIENTE"].str.lower().str.contains(termo_lower) | df["COD.CLI."].astype(str).str.contains(termo)]
+        st.dataframe(df_busca.groupby(["Ano", "CLIENTE"], as_index=False)["Valor"].sum())
 
+# ================= Clientes Perdidos =================
+elif pagina == "Clientes Perdidos":
     st.title("📉 Clientes que não compraram mais")
 
     # Seleção de anos base (múltiplos)
@@ -68,8 +76,11 @@ if pagina == "Análise de Vendas":
     col1, col2 = st.columns(2)
     col1.metric("🚨 Clientes perdidos", len(df_perdidos))
     col2.metric("💸 Valor perdido", f"R$ {df_perdidos['Valor'].sum():,.2f}")
+    st.dataframe(df_perdidos, use_container_width=True)
 
     # --- Novo gráfico consolidado ---
+    st.markdown("### 📊 Top Clientes Perdidos por Valor")
+    top_filter = st.selectbox("Selecionar Top N", ["Top 5", "Top 10", "Top 20", "Todos"], index=1)
 
     if top_filter != "Todos":
         n_val = int(top_filter.split()[1])
