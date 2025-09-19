@@ -99,7 +99,7 @@ elif pagina == "Clientes Perdidos":
     clientes_lista = df_perdidos["CLIENTE"].tolist()
     cliente_escolhido = st.selectbox("🔎 Selecionar cliente para análise", ["(Nenhum)"] + clientes_lista)
 
-    if cliente_escolhido != "(Nenhum)"):
+    if cliente_escolhido != "(Nenhum)":
         df_cliente = df[df["CLIENTE"] == cliente_escolhido].groupby("Ano", as_index=False)["Valor"].sum()
         todos_anos = pd.DataFrame({"Ano": anos})
         df_cliente = todos_anos.merge(df_cliente, on="Ano", how="left").fillna(0)
