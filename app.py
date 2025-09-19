@@ -49,10 +49,41 @@ col3.metric(f"Top {top_n} — Soma", f"R$ {top10['Valor'].sum():,.2f}")
 
 st.markdown("---")
 
-# Exibição principal: gráfico + tabela
-left, right = st.columns([2,1])
 
-with left:
+# Exibição principal: gráfico + tabela
+st.markdown("## 📊 Top {top_n} Clientes por Valor — " + ("Todos os anos" if selected_ano=="Total" else "Ano " + selected_ano), unsafe_allow_html=True)
+
+if top10.shape[0] == 0:
+    st.info("Nenhum dado para o filtro selecionado.")
+else:
+    # Destaque no Top 1
+    top10["Cor"] = ["#ff7f0e"] + ["#1f77b4"] * (len(top10)-1)
+
+    fig = px.bar(
+        top10,
+        x="Valor",
+        y="CLIENTE",
+        orientation="h",
+        text="Valor",
+        hover_data=["COD.CLI."],
+        color="Cor",
+        color_discrete_map="identity",
+        labels={"Valor":"Valor (R$)", "CLIENTE":"Cliente"}
+    )
+    fig.update_traces(texttemplate="R$ %{x:,.2f}", textposition="outside")
+    fig.update_layout(
+        yaxis={"categoryorder":"total ascending"},
+        margin=dict(t=30, b=30, l=100, r=40),
+        showlegend=False,
+        height=500
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+st.markdown("## 📑 Tabela — Top 10")
+# Estilização da tabela
+styled_table = top10.drop(columns=["Cor"]).style.format({"Valor":"R$ {:,.2f}"}).background_gradient(subset=["Valor"], cmap="Blues")
+st.dataframe(styled_table, height=500)
+
     st.subheader(f"Top {top_n} Clientes por Valor — {'Todos os anos' if selected_ano=='Total' else 'Ano '+selected_ano}")
     if top10.shape[0] == 0:
         st.info("Nenhum dado para o filtro selecionado.")
@@ -61,9 +92,6 @@ with left:
         fig.update_layout(xaxis_tickangle=-45, margin=dict(t=30,b=150))
         st.plotly_chart(fig, use_container_width=True)
 
-with right:
-    st.subheader("Tabela — Top 10")
-    st.dataframe(top10.style.format({"Valor":"R$ {:,.2f}"}), height=400)
 
 st.markdown("---")
 st.subheader("Dados filtrados (amostra)")
