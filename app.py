@@ -79,16 +79,15 @@ else:
     st.plotly_chart(fig, use_container_width=True)
 
 st.markdown("## 📑 Tabela — Top 10")
-styled_table = (
-    top10.drop(columns=["Cor"])
-    .style.format({"Valor": "R$ {:,.2f}"})
-    .background_gradient(subset=["Valor"], cmap="Blues")
-)
-st.dataframe(styled_table, height=500)
+df_table = top10.drop(columns=["Cor"]).copy()
+df_table["Valor"] = df_table["Valor"].map("R$ {:,.2f}".format)
+st.dataframe(df_table, height=500)
 
 st.markdown("---")
 st.subheader("📋 Dados filtrados (amostra)")
-st.dataframe(df_f.head(200))
+df_preview = df_f.head(200).copy()
+df_preview["Valor"] = df_preview["Valor"].map("R$ {:,.2f}".format)
+st.dataframe(df_preview)
 
 # --- Downloads ---
 def to_excel_bytes(df_obj):
@@ -101,7 +100,7 @@ col_dl1, col_dl2 = st.columns(2)
 with col_dl1:
     st.download_button(
         "⬇️ Baixar Top 10 (Excel)",
-        data=to_excel_bytes(top10),
+        data=to_excel_bytes(top10.drop(columns=["Cor"])),
         file_name="top10_clientes.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
