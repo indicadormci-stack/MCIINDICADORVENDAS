@@ -59,7 +59,11 @@ col3.metric(f"🏆 {selected_top}", f"R$ {top_df['Valor'].sum():,.2f}")
 st.markdown("---")
 
 # --- Exibição principal: gráfico + tabela ---
-titulo_top = selected_top if selected_top != "Todos" else "Todos os clientes"
+if selected_top != "Todos":
+    titulo_top = f"{selected_top} (até {len(top_df)} clientes exibidos)"
+else:
+    titulo_top = "Todos os clientes"
+
 st.markdown(f"## 📊 {titulo_top} por Valor — {'Todos os anos' if selected_ano == 'Total' else 'Ano ' + selected_ano}")
 
 if top_df.shape[0] == 0:
