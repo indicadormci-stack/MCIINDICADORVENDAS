@@ -98,6 +98,7 @@ else:
 st.markdown(f"## 📑 Tabela — {titulo_top}")
 df_table = top_df.drop(columns=["Cor"]).copy() if "Cor" in top_df.columns else top_df.copy()
 df_table["Valor"] = df_table["Valor"].map("R$ {:,.2f}".format)
+df_table.index = df_table.index + 1
 st.dataframe(df_table)
 
 if selected_top != "Todos" and len(top_df) < (top_n if top_n is not None else len(top_df)):
